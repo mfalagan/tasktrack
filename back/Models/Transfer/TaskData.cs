@@ -1,26 +1,22 @@
-using back.Models.Transfer;
-
-namespace back.Models.Internal
+namespace back.Models.Transfer
 {
-    public class Task
+    public class TaskData
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public string Description { get; set; } = "";
+        public string Name { get; set; }
+        public string Description { get; set; }
         public DateOnly? DueDate { get; set; }
 
-        public Task(TaskEntry task)
+        public TaskData(Models.Internal.Task task)
         {
             this.Name = task.Name;
             this.Description = task.Description;
             this.DueDate = task.DueDate;
         }
-        public Task(TaskData task)
+        public TaskData(TaskEntry task)
         {
             this.Name = task.Name;
             this.Description = task.Description;
             this.DueDate = task.DueDate;
         }
-        public Task() { }
     }
 }
