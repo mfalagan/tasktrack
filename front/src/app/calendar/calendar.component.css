@@ -1,0 +1,15 @@
+.container-fluid {
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+}
+
+.calendar-grid {
+    flex-grow: 1; /* Takes up all available space after other elements are laid out */
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-grid .row {
+    flex-grow: 1; /* Allows each row to grow and fill the space evenly */
+}
