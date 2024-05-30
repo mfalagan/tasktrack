@@ -1,4 +1,5 @@
 using back.Models;
+using back.Models.Internal;
 using back.Models.Transfer;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,16 @@ namespace back.Services
         public TaskDbService(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public Task<Models.Transfer.UserCredentials> RegisterUser(Models.Transfer.UserCredentials user)
+        {
+            throw new NotImplementedException(); // TODO
+        }
+
+        public Task<User> GetUser(UserCredentials user)
+        {
+            throw new NotImplementedException(); //TODO
         }
 
         public async Task<List<TaskEntry>> GetTasks()

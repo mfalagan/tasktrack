@@ -3,6 +3,7 @@ using back.Models.Transfer;
 using back.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using ArgumentException = back.Exceptions.ArgumentException;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EjercicioApiRest.Controllers
 {
@@ -15,6 +16,13 @@ namespace EjercicioApiRest.Controllers
         public TaskController(ITaskDbService service)
         {
             _service = service;
+        }
+
+        [Authorize]
+        [HttpGet("secure-data")]
+        public IActionResult GetSecureData()
+        {
+            return Ok("This is secured data");
         }
 
         // GET: /tasks
