@@ -1,16 +1,20 @@
+@if (day_selected !== null) {
+    <app-summary (closePopup)="hideSummary()" [day]="day_selected" [events]="events"></app-summary>
+}
+
 <div class="container-fluid">
     <div class="row mb-4 align-items-center justify-content-center">
         <div class="col-auto">
             <div class="input-group">
                 <button class="btn btn-secondary" (click)="goToPreviousMonth()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 20 20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-arrow-left-short" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5"/>
                     </svg>
                 </button>
-                <input type="text" class="form-control text-center border-0 bg-transparent" value="June" readonly>
-                <input type="number" class="form-control text-center border-0 bg-transparent" value="2024">
+                <input type="text" class="form-control text-center border-0 bg-transparent" value="{{ month_name }}" readonly>
+                <input type="number" class="form-control text-center border-0 bg-transparent" [(ngModel)]="year" (ngModelChange)="updateCalendar()">
                 <button class="btn btn-secondary" (click)="goToNextMonth()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 20 20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-arrow-right-short" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
                     </svg>
                 </button>
@@ -31,7 +35,7 @@
             ]; 
             track day) {
 
-                <div class="d-none d-md-block col-1 flex-fill align-items-stretch text-center">{{ day[0] }}</div>
+                <div class="d-none d-md-block col-1 flex-fill justify-content-between align-items-stretch text-center">{{ day[0] }}</div>
                 <div class="d-block d-md-none col-1 flex-fill align-items-stretch text-center">{{ day[1] }}</div>
         }
     </div>
@@ -41,7 +45,7 @@
             <div class="row  align-items-stretch">
                 @for (day of week; track day) {
                     <div class="col p-2">
-                        <app-calendarcell [day]="day"></app-calendarcell>
+                        <app-calendar-cell [day]="day" (click)="showSummary(day)"></app-calendar-cell>
                     </div>
                 }
             </div>

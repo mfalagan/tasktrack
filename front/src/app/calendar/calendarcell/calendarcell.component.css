@@ -1,9 +1,0 @@
-.card {
-    border: none; /* Remove borders from the card */
-    background-color: hsl(210, 7%, 95%); /* Set the default background color to light gray */
-    transition: background-color 0.1s; /* Smooth transition for hover effect */
-}
-
-.card:hover {
-    background-color: white; /* Change background color to white on hover */
-}

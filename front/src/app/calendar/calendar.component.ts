@@ -3,21 +3,31 @@ import {
 	Input,
 	SimpleChanges,
  } from '@angular/core';
-import { CalendarcellComponent } from "./calendarcell/calendarcell.component";
+import { CalendarCellComponent } from "./calendar-cell/calendarcell.component";
+import { FormsModule } from '@angular/forms';
+import { SummaryComponent } from "./summary/summary.component";
 
 @Component({
-		selector: 'app-calendar',
-		standalone: true,
-		templateUrl: './calendar.component.html',
-		styleUrl: './calendar.component.css',
-		imports: [CalendarcellComponent]
+    selector: 'app-calendar',
+    standalone: true,
+    templateUrl: './calendar.component.html',
+    styleUrl: './calendar.component.css',
+    imports: [CalendarCellComponent, FormsModule, SummaryComponent]
 })
 export class CalendarComponent {
-	@Input() year: number = new Date().getFullYear();
-	@Input() month: number = new Date().getMonth() + 1; // Months are 1-indexed for user-friendliness
+	@Input() year: number = new Date(Date.now()).getFullYear();
+	@Input() month: number = new Date(Date.now()).getMonth() + 1;
 	days: Date[][] = [];
+	month_name: string = "";
+
+	day_selected: Date | null = null;
+	// remove this line
+	events = [{title: "hola", description: "adios", date: new Date(Date.now())}];
 
 	ngOnChanges(changes: SimpleChanges) {
+		this.updateCalendar();
+	}
+	ngOnInit() {
 		this.updateCalendar();
 	}
 
@@ -39,6 +49,27 @@ export class CalendarComponent {
 			}
 			this.days.push(week);
 		}
+
+		this.month_name = [
+			"January", 
+			"February", 
+			"March", 
+			"April", 
+			"May", 
+			"June",
+			"July", 
+			"August", 
+			"September", 
+			"October", 
+			"November", 
+			"December"][this.month - 1];
+	}
+
+	showSummary(day: Date): void {
+		this.day_selected = day;
+	}
+	hideSummary(): void {
+		this.day_selected = null;
 	}
 
 	getStartDay(firstDayOfMonth: Date): Date {
