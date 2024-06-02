@@ -46,7 +46,6 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-
 builder.Services.AddDbContext<ApplicationDbContext>(
     options =>
         options.UseMySql(
@@ -83,7 +82,8 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-builder.Services.AddScoped<ITaskDbService, TaskDbService>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
 var app = builder.Build();

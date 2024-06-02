@@ -1,19 +1,42 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using back.Models.Internal;
+using System.Text;
+using back.Models;
+using Task = System.Threading.Tasks.Task;
+using Microsoft.EntityFrameworkCore;
 
-namespace back.Services {
+namespace back.Services
+{
     public class JwtService : IJwtService
     {
         private readonly IConfiguration _configuration;
-        public JwtService(IConfiguration configuration)
+        private readonly ApplicationDbContext _context;
+
+        public JwtService(IConfiguration configuration, ApplicationDbContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
         public string GenerateSecurityToken(int userId)
         {
+            var user = _context.Users.Find(userId) 
+                       ?? throw new InvalidOperationException("User not found");
+
+            var token = new Token
+            {
+                Value = "",
+                Expiration = DateTime.UtcNow.AddHours(1),
+                User = user,
+                UserId = userId,
+                IsValid = true
+            };
+
+            _context.Tokens.Add(token);
+            _context.SaveChanges();
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(
                 _configuration["Jwt:Key"] ??
@@ -25,33 +48,33 @@ namespace back.Services {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-                    // TODO: uncomment & add token table to db
-                    // new Claim("TokenId", tokenId)
+                    new Claim("TokenId", token.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Expires = token.Expiration,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"]
             };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            var jwtToken = tokenHandler.CreateToken(tokenDescriptor);
+            var jwtTokenString = tokenHandler.WriteToken(jwtToken);
 
-            // var tokenHandler = new JwtSecurityTokenHandler();
-            // var key = Encoding.ASCII.GetBytes(
-            //     _configuration["Jwt:Key"] ??
-            //     throw new InvalidOperationException("Jwt:Key is missing in appsettings.json")
-            // );
-            // var tokenDescriptor = new SecurityTokenDescriptor
-            // {
-            //     Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, email) }),
-            //     Expires = DateTime.UtcNow.AddDays(7),
-            //     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-            //     Issuer = _configuration["Jwt:Issuer"],
-            //     Audience = _configuration["Jwt:Audience"]
-            // };
+            token.Value = jwtTokenString;
+            _context.Tokens.Update(token);
+            _context.SaveChanges();
 
-            // var token = tokenHandler.CreateToken(tokenDescriptor);
-            // return tokenHandler.WriteToken(token);
+            return jwtTokenString;
+        }
+
+        public async Task InvalidateToken(int tokenId)
+        {
+            var token = await _context.Tokens.FirstOrDefaultAsync(t => t.Id == tokenId);
+            if (token != null)
+            {
+                token.IsValid = false;
+                _context.Tokens.Update(token);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
-

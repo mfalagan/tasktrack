@@ -7,6 +7,7 @@ namespace back.Services {
     public interface IJwtService
     {
         public string GenerateSecurityToken(int userId);
+        public Task InvalidateToken(int tokenId);
     }
 }
 

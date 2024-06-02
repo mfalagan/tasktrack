@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using back.Models.Transfer;
 using back.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -62,7 +63,27 @@ namespace back.Controllers
         [HttpPost("logout")]
         public async Task<ActionResult> Logout()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var tokenIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "TokenId");
+                if (tokenIdClaim == null)
+                {
+                    return BadRequest("Invalid token");
+                }
+
+                var tokenId = int.Parse(tokenIdClaim.Value);
+                await _jwtService.InvalidateToken(tokenId);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return StatusCode(500); // 500 Internal Server Error
+            }
         }
     }
 }
