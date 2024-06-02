@@ -1,7 +1,7 @@
 using back.Models.Transfer;
 using back.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ArgumentException = back.Exceptions.ArgumentException;
 
 namespace back.Controllers
 {
@@ -19,19 +19,24 @@ namespace back.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult Login([FromBody] UserCredentials user)
+        public async Task<ActionResult> Login([FromBody] UserCredentials providedUser)
         {
-
-            
-
-            // Just horrible validation as a placeholder
-            if (user.Username == "user" && user.Password == "pass")
-            {
-                var token = _jwtService.GenerateSecurityToken(user.Email ?? "pepe");
-                return Ok(new { token });
+            try {
+                var storedUser = await _dbService.GetUser(providedUser);
+                if (storedUser.Password == providedUser.Password)
+                    return Ok(_jwtService.GenerateSecurityToken(storedUser.Id));
+                else
+                    return Unauthorized();
             }
-            else
-                return Unauthorized();
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return StatusCode(500); // 500 Internal Server Error
+            }
         }
 
         [HttpPost("register")]
@@ -51,6 +56,13 @@ namespace back.Controllers
                 Console.WriteLine(e.Message);
                 return StatusCode(500); // 500 Internal Server Error
             }
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            throw new NotImplementedException();
         }
     }
 }

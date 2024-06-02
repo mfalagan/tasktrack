@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace back.Services {
     public interface IJwtService
     {
-        public string GenerateSecurityToken(string email);
+        public string GenerateSecurityToken(int userId);
     }
 }
 
