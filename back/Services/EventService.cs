@@ -14,7 +14,7 @@ namespace back.Services
         Task<Event?> UpdateEvent(int userId, int eventId, EventData eventData);
         Task<Event?> DeleteEvent(int userId, int eventId);
     }
-    
+
     public class EventService : IEventService
     {
         private readonly ApplicationDbContext _context;
@@ -50,7 +50,7 @@ namespace back.Services
         {
             var newEvent = new Event
             {
-                Title = eventData.Title,
+                Title = eventData.Title ?? throw new ArgumentNullException("Title must be provided"),
                 Description = eventData.Description,
                 DueDate = eventData.DueDate,
                 Priority = eventData.Priority,
@@ -73,7 +73,7 @@ namespace back.Services
                 return null;
             }
 
-            eventEntity.Title = eventData.Title;
+            eventEntity.Title = eventData.Title ?? throw new ArgumentNullException("Title must be provided");
             eventEntity.Description = eventData.Description;
             eventEntity.DueDate = eventData.DueDate;
             eventEntity.Priority = eventData.Priority;

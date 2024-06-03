@@ -2,7 +2,7 @@ namespace back.Models.Transfer
 {
     public class EventData
     {
-        public string Title { get; set; }
+        public string? Title { get; set; }
         public string? Description { get; set; }
         public DateOnly DueDate { get; set; }
         public Models.Internal.PriorityLevel Priority { get; set; }
