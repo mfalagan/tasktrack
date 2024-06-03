@@ -65,18 +65,11 @@ namespace back.Controllers
         {
             try
             {
-                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
-
-                var tokenIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "TokenId");
-                if (tokenIdClaim == null)
-                {
-                    return BadRequest("Invalid token");
-                }
-
-                var tokenId = int.Parse(tokenIdClaim.Value);
-                await _jwtService.InvalidateToken(tokenId);
+                await _jwtService.InvalidateToken(int.Parse(
+                    User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?
+                    .Value ?? throw new ArgumentException("Invalid token")
+                ));
+                
                 return Ok();
             }
             catch (Exception e)

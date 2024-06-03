@@ -13,12 +13,10 @@ namespace back.Controllers
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EventController(IEventService eventService, IHttpContextAccessor httpContextAccessor)
+        public EventController(IEventService eventService)
         {
             _eventService = eventService;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         [Authorize]

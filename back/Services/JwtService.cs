@@ -54,7 +54,7 @@ namespace back.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-                    new Claim("TokenId", token.Id.ToString())
+                    new Claim(JwtRegisteredClaimNames.Jti, token.Id.ToString()),
                 }),
                 Expires = token.Expiration,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
