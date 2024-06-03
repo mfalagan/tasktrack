@@ -10,12 +10,12 @@ namespace back.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ITaskDbService _dbService;
+        private readonly IAuthService _authService;
         private readonly IJwtService _jwtService;
 
-        public AuthController(ITaskDbService dbService, IJwtService jwtService)
+        public AuthController(IAuthService authService, IJwtService jwtService)
         {
-            _dbService = dbService;
+            _authService = authService;
             _jwtService = jwtService;
         }
 
@@ -23,7 +23,7 @@ namespace back.Controllers
         public async Task<ActionResult> Login([FromBody] UserCredentials providedUser)
         {
             try {
-                var storedUser = await _dbService.GetUser(providedUser);
+                var storedUser = await _authService.GetUser(providedUser);
                 if (storedUser.Password == providedUser.Password)
                     return Ok(_jwtService.GenerateSecurityToken(storedUser.Id));
                 else
@@ -45,7 +45,7 @@ namespace back.Controllers
         {
             try
             {
-                await _dbService.RegisterUser(user);
+                await _authService.RegisterUser(user);
                 return Ok();
             }
             catch (ArgumentException e)

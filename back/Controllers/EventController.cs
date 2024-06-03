@@ -23,7 +23,7 @@ namespace back.Controllers
 
         private int GetUserIdFromToken()
         {
-            var token = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(token);
 
@@ -42,7 +42,10 @@ namespace back.Controllers
         {
             try
             {
-                var userId = GetUserIdFromToken();
+                var userId = int.Parse(
+                    User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?
+                    .Value ?? throw new ArgumentException("Invalid token")
+                );
                 var events = await _eventService.GetUserEvents(userId);
                 return Ok(events.Select(e => new EventEntry(e)).ToList());
             }

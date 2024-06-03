@@ -9,6 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace back.Services
 {
+    public interface IJwtService
+    {
+        public string GenerateSecurityToken(int userId);
+        public Task InvalidateToken(int tokenId);
+    }
+
     public class JwtService : IJwtService
     {
         private readonly IConfiguration _configuration;
@@ -64,6 +70,22 @@ namespace back.Services
             _context.SaveChanges();
 
             return jwtTokenString;
+        }
+
+        public IDictionary<string, string> DecodeJwtToken(string jwtToken)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            
+            var token = tokenHandler.ReadJwtToken(jwtToken);
+
+            var claims = new Dictionary<string, string>();
+            foreach (var claim in token.Claims)
+            {
+                claims[claim.Type] = claim.Value;
+                Console.WriteLine($"{claim.Type}: {claim.Value}");
+            }
+
+            return claims;
         }
 
         public async Task InvalidateToken(int tokenId)

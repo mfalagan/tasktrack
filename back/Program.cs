@@ -83,8 +83,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 builder.Services.AddScoped<IEventService, EventService>();
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
