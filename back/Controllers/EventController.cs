@@ -21,21 +21,6 @@ namespace back.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        private int GetUserIdFromToken()
-        {
-            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-
-            var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-            {
-                throw new UnauthorizedAccessException("Invalid token");
-            }
-
-            return int.Parse(userIdClaim.Value);
-        }
-
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<EventEntry>>> GetEvents()
@@ -62,7 +47,10 @@ namespace back.Controllers
         {
             try
             {
-                var userId = GetUserIdFromToken();
+                var userId = int.Parse(
+                    User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?
+                    .Value ?? throw new ArgumentException("Invalid token")
+                );
                 var events = await _eventService.GetNextEvents(userId, n);
                 return Ok(events.Select(e => new EventEntry(e)).ToList());
             }
@@ -79,7 +67,10 @@ namespace back.Controllers
         {
             try
             {
-                var userId = GetUserIdFromToken();
+                var userId = int.Parse(
+                    User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?
+                    .Value ?? throw new ArgumentException("Invalid token")
+                );
                 var eventEntity = await _eventService.GetEvent(userId, id);
                 if (eventEntity == null)
                 {
@@ -100,7 +91,10 @@ namespace back.Controllers
         {
             try
             {
-                var userId = GetUserIdFromToken();
+                var userId = int.Parse(
+                    User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?
+                    .Value ?? throw new ArgumentException("Invalid token")
+                );
                 var eventEntity = await _eventService.AddEvent(userId, eventData);
                 return StatusCode(201, new EventEntry(eventEntity)); // 201 Created
             }
@@ -117,7 +111,10 @@ namespace back.Controllers
         {
             try
             {
-                var userId = GetUserIdFromToken();
+                var userId = int.Parse(
+                    User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?
+                    .Value ?? throw new ArgumentException("Invalid token")
+                );
                 var eventEntity = await _eventService.UpdateEvent(userId, id, eventData);
                 if (eventEntity == null)
                 {
@@ -138,7 +135,10 @@ namespace back.Controllers
         {
             try
             {
-                var userId = GetUserIdFromToken();
+                var userId = int.Parse(
+                    User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?
+                    .Value ?? throw new ArgumentException("Invalid token")
+                );
                 var eventEntity = await _eventService.DeleteEvent(userId, id);
                 if (eventEntity == null)
                 {
