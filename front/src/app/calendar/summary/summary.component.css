@@ -1,0 +1,29 @@
+.summary-card {
+  position: fixed;
+  top: 200px;
+  left: 200px;
+  width: 300px;
+  z-index: 1000000;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  border: none;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.card-header {
+  background-color: hsl(210, 7%, 95%);
+  padding: 10px 15px;
+  border: none;
+}
+
+.card-footer {
+  background-color: hsl(210, 7%, 95%);
+  padding: 10px 15px;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+}

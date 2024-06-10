@@ -1,0 +1,42 @@
+.card {
+    border: none; /* Remove borders from the card */
+    background-color: hsl(210, 7%, 95%); /* Set the default background color to light gray */
+    transition: 0.1s; /* Smooth transition for hover effect */
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: white; /* Change background color to white on hover */
+}
+
+.event-markers span {
+    border-radius: 50%;
+    display: inline-block;
+    margin: 2px;
+    height: 14px;
+    width: 14px;
+}
+@media (max-width: 960px) {
+    .event-markers span {
+        height: 12px;
+        width: 12px;
+    }
+}
+@media (max-width: 720px) {
+    .event-markers span {
+        height: 10px;
+        width: 10px;
+    }
+}
+@media (max-width: 540px) {
+    .event-markers span {
+        height: 8px;
+        width: 8px;
+    }
+}
+
+
+.event-priority-1 { background-color: hsl(0, 100%, 75%); }
+.event-priority-2 { background-color: hsl(39, 100%, 60%); }
+.event-priority-3 { background-color: hsl(55, 100%, 50%); }
+.event-priority-4 { background-color: hsl(89, 100%, 60%); }

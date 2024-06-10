@@ -1,0 +1,48 @@
+name: Update Swagger
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - '**/*.cs'
+
+jobs:
+  update-swagger:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.0'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build the project
+      run: dotnet build --no-restore
+
+    - name: Update Swagger JSON
+      run: dotnet run --project path/to/your/WebAPIproject.csproj --no-build
+
+    - name: Determine output file name
+      id: vars
+      run: |
+        if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
+          echo "::set-output name=swagger_path::path/to/main/SwaggerOutput.json"
+        elif [[ ${{ github.ref }} == 'refs/heads/develop' ]]; then
+          echo "::set-output name=swagger_path::path/to/develop/SwaggerOutput.json"
+        fi
+
+    - name: Commit and push updated Swagger JSON
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add ${{ steps.vars.outputs.swagger_path }}
+        git commit -m "Update Swagger JSON on ${{ github.ref_name }}"
+        git push
