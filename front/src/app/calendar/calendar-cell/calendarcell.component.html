@@ -3,7 +3,7 @@
         <h5 class="mb-1">{{ dayNumber }}</h5>
         <div class="event-markers">
             @for (event of events; track event) {
-                <span class="event-priority event-priority-{{ event }}"></span>
+                <span class="event-priority event-priority-{{ event.priority }}"></span>
             }
         </div>
     </div>

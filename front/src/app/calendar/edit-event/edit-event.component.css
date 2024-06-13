@@ -1,0 +1,47 @@
+.edit-event-form {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50vw; /* Adjust as needed */
+    min-width: 500px;
+    z-index: 1050; /* Typically Bootstrap modal z-index */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Keeps the form within the bounds of the card */
+  }
+  
+  .card {
+    background-color: #fff;
+    border-radius: 0.25rem;
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+  }
+  
+  .card-header {
+    background-color: hsl(210, 7%, 95%);
+  }
+  
+  .card-footer {
+    background-color: hsl(210, 7%, 95%);
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .card-body {
+    overflow-y: auto;
+  }
+  
+  .form-control {
+    border-radius: 0.25rem;
+  }
+  
+  .btn {
+    margin: 0 8px;
+  }
+  
+  /* Specific styles to handle validation feedback */
+  .text-danger {
+    font-size: 0.875em;
+  }
+  

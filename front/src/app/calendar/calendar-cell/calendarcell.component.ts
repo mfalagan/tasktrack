@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { EventInternal } from '../../../models/Event';
 
 @Component({
 	selector: 'app-calendar-cell',
@@ -9,8 +10,8 @@ import { Component, Input } from '@angular/core';
 })
 export class CalendarCellComponent {
 	@Input() day: Date = new Date(Date.now());
+	@Input() events: EventInternal[] | undefined = [];
 	dayNumber: number = 1;
-	events: number[] = this.generateRandomArray();
 	isToday: boolean = false;
 
 	generateRandomArray(): number[] {

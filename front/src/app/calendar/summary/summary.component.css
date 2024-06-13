@@ -1,10 +1,36 @@
 .summary-card {
   position: fixed;
-  top: 200px;
-  left: 200px;
-  width: 300px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50vw; /* 50% of the viewport width */
+  height: 50vh; /* 50% of the viewport height */
+  min-width: 500px;
+  min-height: 500px;
   z-index: 1000000;
+  overflow: hidden; /* Ensures no overflow from the card itself */
+  display: flex;
+  flex-direction: column;
+  background: #fff; /* Optional: background color */
+  border-radius: 10px; /* Optional: rounded corners */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Optional: shadow for better visibility */
 }
+
+.summary-card .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;  /* Ensures the card fills the parent container */
+}
+
+.card-header, .card-footer {
+  flex-shrink: 0;  /* Prevents the header and footer from shrinking */
+}
+
+.card-body {
+  overflow-y: auto; /* Makes the event list inside card-body scrollable */
+  flex-grow: 1; /* Allows the card-body to take up all available space */
+}
+
 
 .card {
   background-color: #fff;
@@ -26,4 +52,21 @@
   border: none;
   display: flex;
   justify-content: space-between;
+}
+
+.event-details {
+  flex-grow: 1;
+  margin-right: 10px; /* ensures some space between text and buttons */
+}
+
+.event-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Center items vertically */
 }
