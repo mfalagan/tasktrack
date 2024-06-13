@@ -7,6 +7,7 @@ import { CalendarCellComponent } from "./calendar-cell/calendarcell.component";
 import { FormsModule } from '@angular/forms';
 import { SummaryComponent } from "./summary/summary.component";
 import { EventInternal } from "../../models/Event";
+import { EventService } from '../../codegen';
 
 @Component({
     selector: 'app-calendar',
@@ -24,14 +25,11 @@ export class CalendarComponent {
 
 	day_selected: Date | null = null;
 
-	ngOnChanges(changes: SimpleChanges) {
+	constructor(private service: EventService) {
 		this.updateCalendar();
 	}
-	ngOnInit() {
-		this.events.set(new Date(2024, 5, 6).toString(), [
-			{id: 0, title: "Evento de prueba", description: "Prueba de evento", priority: 1, date: new Date(2024, 5, 6)},
-			{id: 1, title: "Evento de prueba 2", description: "Prueba de evento 2", priority: 2, date: new Date(2024, 5, 6)}
-		]);
+
+	ngOnChanges(changes: SimpleChanges) {
 		this.updateCalendar();
 	}
 
@@ -77,7 +75,6 @@ export class CalendarComponent {
 	}
 
 	addEvent(event: EventInternal): void {
-		
 		if (event.id) {
 			this.events.set(event.date.toString(), this.events.get(event.date.toString())?.map(e => e.id === event.id ? event : e) || []);
 		  } else {

@@ -8,16 +8,16 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy("AllowSpecificOrigin",
-//         policyBuilder =>
-//         {
-//             policyBuilder.WithOrigins("http://localhost:4200") // Allowed origin
-//                          .AllowAnyHeader()
-//                          .AllowAnyMethod();
-//         });
-// });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        policyBuilder =>
+        {
+            policyBuilder.WithOrigins("http://localhost:4200") // Allowed origin
+                         .AllowAnyHeader()
+                         .AllowAnyMethod();
+        });
+});
 
 builder.Services.AddAuthentication(options =>
 {
@@ -100,7 +100,7 @@ var app = builder.Build();
 
 app.Urls.Add("http://*:80");
 
-// app.UseCors("AllowSpecificOrigin");
+app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthentication();
 app.UseAuthorization();
