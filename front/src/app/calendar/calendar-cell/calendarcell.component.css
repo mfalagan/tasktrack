@@ -36,7 +36,6 @@
 }
 
 
-.event-priority-1 { background-color: hsl(0, 100%, 75%); }
-.event-priority-2 { background-color: hsl(39, 100%, 60%); }
-.event-priority-3 { background-color: hsl(55, 100%, 50%); }
-.event-priority-4 { background-color: hsl(89, 100%, 60%); }
+.event-priority-0 { background-color: hsl(0, 100%, 75%); }
+.event-priority-1 { background-color: hsl(39, 100%, 60%); }
+.event-priority-2 { background-color: hsl(55, 100%, 50%); }
