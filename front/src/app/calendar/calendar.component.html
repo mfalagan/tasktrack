@@ -1,3 +1,10 @@
+<div class="top-bar">
+    <div class="title">TaskTrack</div>
+    <div class="logout">
+      <button (click)="onLogout()">Logout</button>
+    </div>
+  </div>
+
 @if (day_selected !== null) {
     <app-summary (closePopup)="hideSummary()" (addEvent)="addEvent($event)" (deleteEvent)="deleteEvent($event)" [day]="day_selected" [events]="events.get(day_selected.toString())"></app-summary>
 }

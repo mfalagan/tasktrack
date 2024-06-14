@@ -34,10 +34,10 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = 
+        IssuerSigningKey =
             new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
-                    builder.Configuration["Jwt:Key"] ?? 
+                    builder.Configuration["Jwt:Key"] ??
                         throw new InvalidOperationException("Jwt:Key is missing in appsettings.json")
                     )
                 )
@@ -89,11 +89,17 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())
 // {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 // }
 
 // app.UseHttpsRedirection();
