@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { EventInternal } from '../../../models/Event';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { EventData } from '../../../codegen';
 
 @Component({
   selector: 'app-edit-event',
@@ -10,8 +10,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
   styleUrl: './edit-event.component.css'
 })
 export class EditEventComponent {
-  @Input() event: EventInternal | null = null;
-  @Output() updateEvent = new EventEmitter<EventInternal>();
+  @Input() event: EventData | null = null;
+  @Output() updateEvent = new EventEmitter<EventData>();
   @Output() cancelEdit = new EventEmitter<void>();
 
   eventForm: FormGroup;
@@ -35,10 +35,11 @@ export class EditEventComponent {
 
   submit() {
     if (this.eventForm.valid) {
-      const updatedEvent: EventInternal = {
+      const updatedEvent: EventData = {
         ...this.event,
         ...this.eventForm.value
       };
+      console.log("edit-event emmitting ", updatedEvent);
       this.updateEvent.emit(updatedEvent);
     }
   }

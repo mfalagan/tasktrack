@@ -34,8 +34,10 @@ export class SummaryComponent {
   }
   persistEdit(event: EventData): void {
     if ('id' in event && typeof event.id === 'number') {
+      console.log("summary emitting update ", event);
       this.updateEvent.emit(event as EventEntry);
     } else {
+      console.log("summary emitting add ", event);
       this.addEvent.emit(event);
     }
     this.eventToEdit = null;
@@ -46,15 +48,14 @@ export class SummaryComponent {
   }
 
   startAddEvent(): void {
-    let now = new Date(Date.now());
     this.eventToEdit = {
       title: '',
       description: '',
       priority: 1,
       dueDate: {
-        year: now.getFullYear(),
-        month: now.getMonth(),
-        day: now.getDate()
+        year: this.day.getFullYear(),
+        month: this.day.getMonth(),
+        day: this.day.getDate()
       }
     } as EventData;
   }
