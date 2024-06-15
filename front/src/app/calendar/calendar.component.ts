@@ -1,26 +1,25 @@
-import { 
+import {
 	Component,
 	Input,
 	SimpleChanges,
- } from '@angular/core';
+} from '@angular/core';
 import { CalendarCellComponent } from "./calendar-cell/calendarcell.component";
 import { FormsModule } from '@angular/forms';
 import { SummaryComponent } from "./summary/summary.component";
-import { EventInternal } from "../../models/Event";
-import { DayOfWeek, EventData, EventEntry, EventService, PriorityLevel } from '../../codegen';
+import { EventData, EventEntry, EventService, PriorityLevel } from '../../codegen';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-calendar',
-    standalone: true,
-    templateUrl: './calendar.component.html',
-    styleUrl: './calendar.component.css',
-    imports: [CalendarCellComponent, FormsModule, SummaryComponent]
+	selector: 'app-calendar',
+	standalone: true,
+	templateUrl: './calendar.component.html',
+	styleUrl: './calendar.component.css',
+	imports: [CalendarCellComponent, FormsModule, SummaryComponent]
 })
 export class CalendarComponent {
 	@Input() year: number = new Date(Date.now()).getFullYear();
 	@Input() month: number = new Date(Date.now()).getMonth() + 1;
-	@Input() events: Map<string, EventInternal[]> = new Map<string, EventInternal[]>();
+	@Input() events: Map<string, EventEntry[]> = new Map<string, EventEntry[]>();
 	days: Date[][] = [];
 	month_name: string = "";
 
@@ -45,8 +44,8 @@ export class CalendarComponent {
 			let week: Date[] = [];
 			for (let i = 0; i < 7; ++i) {
 				if (dayToDraw >= lastDayOfMonth && dayToDraw.getDay() === 0)
-						keepDrawing = false;
-				
+					keepDrawing = false;
+
 				week.push(new Date(dayToDraw));
 				dayToDraw.setDate(dayToDraw.getDate() + 1);
 			}
@@ -54,17 +53,17 @@ export class CalendarComponent {
 		}
 
 		this.month_name = [
-			"January", 
-			"February", 
-			"March", 
-			"April", 
-			"May", 
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
 			"June",
-			"July", 
-			"August", 
-			"September", 
-			"October", 
-			"November", 
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
 			"December"][this.month - 1];
 	}
 
@@ -75,51 +74,58 @@ export class CalendarComponent {
 		this.day_selected = null;
 	}
 
-	addEvent(event: EventInternal): void {
-		if (event.id) {
-		  // Update existing event
-		  this.eventService.eventsIdPut(event.id, this.toEventData(event)).subscribe({
-			next: (updatedEvent) => {
-			  console.log('Event updated:', this.toEventInternal(updatedEvent));
-			  // Optionally update local event cache or UI components
-			},
-			error: (error) => {
-			  console.error('Error updating event:', error);
-			}
-		  });
-		  this.events.set(event.date.toString(), this.events.get(event.date.toString())?.map(e => e.id === event.id ? event : e) || []);
-		} else {
-		  // Create new event
-		  this.eventService.eventsPost(this.toEventData(event)).subscribe({
+	addEvent(event: EventData): void {
+		this.eventService.eventsPost(event).subscribe({
 			next: (newEvent) => {
-			  console.log('Event added:', this.toEventInternal(newEvent));
-			  // Optionally update local event cache or UI components
+				console.log('Event added:', newEvent);
+				this.addLocalEvent(newEvent);
 			},
 			error: (error) => {
-			  console.error('Error adding event:', error);
+				console.error('Error adding event:', error);
 			}
-		  });
-		  this.events.set(event.date.toString(), this.events.get(event.date.toString())?.concat(event) || [event]);
-		}
-	  }
-	  
-	  deleteEvent(event: EventInternal): void {
-		if (event.id) {
-		  this.eventService.eventsIdDelete(event.id).subscribe({
+		});
+	}
+	addLocalEvent(event: EventEntry): void {
+		this.events.set(event.dueDate!.toString(), this.events.get(event.dueDate!.toString())?.concat(event) || [event]);
+	}
+
+	updateEvent(event: EventEntry): void {
+		let id: number = event.id!;
+		let eventData = event as EventData; // TODO: check if eventData retains id
+
+		this.eventService.eventsIdPut(id, eventData).subscribe({
+			next: (updatedEvent) => {
+				console.log('Event updated:', updatedEvent);
+				this.updateLocalEvent(updatedEvent);
+			},
+			error: (error) => {
+				console.error('Error updating event:', error);
+			}
+		});
+	}
+	updateLocalEvent(event: EventEntry): void {
+		this.events.set(
+			event.dueDate!.toString(), 
+			this.events.get(event.dueDate!.toString())?.map(e => e.id === event.id ? event : e) || []
+		);
+	}
+
+	deleteEvent(event: EventEntry): void {
+		let id: number = event.id!;
+
+		this.eventService.eventsIdDelete(id).subscribe({
 			next: (response) => {
-			  console.log('Event deleted:', response);
-			  // Optionally update local event cache or UI components
+				console.log('Event deleted:', response);
+				this.deleteLocalEvent(event);
 			},
 			error: (error) => {
-			  console.error('Error deleting event:', error);
+				console.error('Error deleting event:', error);
 			}
-		  });
-		} else {
-		  console.error('Attempted to delete an event without an ID');
-		}
-		this.events.set(event.date.toString(), this.events.get(event.date.toString())?.filter(e => e.id !== event.id) || []);
-	  }
-	  
+		});
+	}
+	deleteLocalEvent(event: EventEntry): void {
+		this.events.set(event.dueDate!.toString(), this.events.get(event.dueDate!.toString())?.filter(e => e.id !== event.id) || []);
+	}
 
 	getStartDay(firstDayOfMonth: Date): Date {
 		const dayOfWeek = firstDayOfMonth.getDay(); // 0 (Sunday) to 6 (Saturday)
@@ -146,33 +152,8 @@ export class CalendarComponent {
 		this.updateCalendar();
 	}
 
-	toEventData(internal: EventInternal): EventData {
-		return {
-			title: internal.title,
-			description: internal.description,
-			dueDate: {
-				year: internal.date.getFullYear(),
-				month: internal.date.getMonth() + 1,  // JavaScript months are 0-indexed, .NET is 1-indexed
-				day: internal.date.getDate(),
-				dayOfWeek: internal.date.getDay() as DayOfWeek // Optional, if your backend requires it
-				// dayOfYear and dayNumber are read-only in .NET and should not be sent
-			},
-			priority: internal.priority as PriorityLevel
-		};
-	}
-	
-	toEventInternal(entry: EventEntry): EventInternal {
-		return {
-			id: entry.id || null,
-			title: entry.title || '',
-			description: entry.description || '',
-			date: new Date(entry.dueDate!.year!, entry.dueDate!.month! - 1, entry.dueDate!.day!),  // Assuming dueDate is always present
-			priority: entry.priority as number  // Assuming priority uses same numbering
-		};
-	}
-
 	onLogout() {
 		localStorage.removeItem('jwtToken'); // Clear the JWT token
 		this.router.navigate(['/']); // Redirect to home or login page
-	  }
+	}
 }

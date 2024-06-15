@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { EventInternal } from '../../../models/Event';
+import { EventEntry } from '../../../codegen';
 
 @Component({
 	selector: 'app-calendar-cell',
@@ -10,15 +10,9 @@ import { EventInternal } from '../../../models/Event';
 })
 export class CalendarCellComponent {
 	@Input() day: Date = new Date(Date.now());
-	@Input() events: EventInternal[] | undefined = [];
+	@Input() events: EventEntry[] = [];
 	dayNumber: number = 1;
 	isToday: boolean = false;
-
-	generateRandomArray(): number[] {
-		const length = Math.floor(Math.random() * 5);
-		const array = Array.from({length}, () => 1 + Math.floor(Math.random() * 4));
-		return array;
-	}
 
 	ngOnChanges() {
 		this.dayNumber = this.day.getDate();

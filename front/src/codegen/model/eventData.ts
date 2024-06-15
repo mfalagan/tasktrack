@@ -9,12 +9,13 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { DateOnly } from './dateOnly';
+import { DateData } from './dateData';
+import { EventEntry } from './eventEntry';
 import { PriorityLevel } from './priorityLevel';
 
 export interface EventData { 
     title?: string;
     description?: string;
-    dueDate?: DateOnly;
+    dueDate?: DateData;
     priority?: PriorityLevel;
 }

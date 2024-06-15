@@ -26,7 +26,7 @@ import { Configuration }                                     from '../configurat
 @Injectable()
 export class AuthService {
 
-    protected basePath = 'http://localhost:8080';
+    protected basePath = '/';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
@@ -100,7 +100,6 @@ export class AuthService {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,
-                responseType: 'text' as 'json',
                 reportProgress: reportProgress
             }
         );

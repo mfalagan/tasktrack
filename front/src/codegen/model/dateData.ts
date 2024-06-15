@@ -9,13 +9,17 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { DateData } from './dateData';
-import { PriorityLevel } from './priorityLevel';
 
-export interface EventEntry { 
-    title?: string;
-    description?: string;
-    dueDate?: DateData;
-    priority?: PriorityLevel;
-    id?: number;
+export interface DateData { 
+    year?: number;
+    month?: number;
+    day?: number;
+}
+
+export function DateData(year: number, month: number, day: number): DateData {
+    return {
+        year: year,
+        month: month,
+        day: day
+    }
 }

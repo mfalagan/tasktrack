@@ -1,5 +1,4 @@
-export * from './dateOnly';
-export * from './dayOfWeek';
+export * from './dateData';
 export * from './eventData';
 export * from './eventEntry';
 export * from './priorityLevel';
