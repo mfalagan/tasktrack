@@ -37,7 +37,7 @@ export class CalendarComponent implements OnChanges {
 		});
 	}
 
-	ngOnChanges(changes: SimpleChanges) {
+	ngOnChanges() {
 		this.updateCalendar();
 	}
 
@@ -98,8 +98,8 @@ export class CalendarComponent implements OnChanges {
 	}
 
 	updateEvent(event: EventEntry): void {
-		let id: number = event.id!;
-		let eventData = event as EventData;
+		const id: number = event.id!;
+		const eventData = event as EventData;
 
 		console.log('Updating event:', eventData);
 
@@ -168,7 +168,6 @@ export class CalendarComponent implements OnChanges {
 	}
 
 	dateToKey(date: Date): string {
-		let key = toDateString(DateDataFromDate(date));
 		return toDateString(DateDataFromDate(date));
 	}
 }

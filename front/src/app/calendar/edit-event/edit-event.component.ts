@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventData, PriorityLevel } from '../../../codegen';
 
@@ -9,7 +9,7 @@ import { EventData, PriorityLevel } from '../../../codegen';
   templateUrl: './edit-event.component.html',
   styleUrl: './edit-event.component.css'
 })
-export class EditEventComponent {
+export class EditEventComponent implements OnChanges {
   @Input() event: EventData | null = null;
   @Output() updateEvent = new EventEmitter<EventData>();
   @Output() cancelEdit = new EventEmitter<void>();

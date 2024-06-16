@@ -9,7 +9,7 @@
     <app-summary (closePopup)="hideSummary()" (addEvent)="addEvent($event)" (updateEvent)="updateEvent($event)" (deleteEvent)="deleteEvent($event)" [day]="day_selected" [events]="events.get(dateToKey(day_selected)) ?? []"></app-summary>
 }
 
-<div class="container-fluid">
+<div class="container-fluid mt-2">
     <div class="row mb-4 align-items-center justify-content-center">
         <div class="col-auto">
             <div class="input-group">
