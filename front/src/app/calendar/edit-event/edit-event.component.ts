@@ -35,7 +35,7 @@ export class EditEventComponent implements OnChanges {
 
   submit() {
     if (this.eventForm.valid) {
-      let formValue = this.eventForm.value;
+      const formValue = this.eventForm.value;
       formValue.priority = +formValue.priority as PriorityLevel;
 
       const updatedEvent: EventData = {

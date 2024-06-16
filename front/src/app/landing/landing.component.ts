@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AuthService } from '../../codegen/api/auth.service';
 import { EventService } from '../../codegen';
 import { Router } from '@angular/router';
@@ -45,10 +45,8 @@ export class LandingComponent {
 
   onSignup() {
     if (this.signupForm.valid) {
-      // Assume authRegisterPost returns an Observable that we need to subscribe to.
       this.authService.authRegisterPost(this.signupForm.value).subscribe({
         next: (response) => {
-          // Registration successful, now login the user automatically
           console.log('Registration Successful:', response);
           this.authService.authLoginPost({
             username: this.signupForm.value.username,
@@ -57,7 +55,7 @@ export class LandingComponent {
             next: (loginResponse) => {
               const token = loginResponse.body;
               localStorage.setItem('jwtToken', token);
-              this.router.navigate(['/calendar']);  // Redirect to calendar
+              this.router.navigate(['/calendar']);
             },
             error: (loginError) => {
               console.error('Login Error after Signup:', loginError);
