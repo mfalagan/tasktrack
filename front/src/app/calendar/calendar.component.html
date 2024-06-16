@@ -6,7 +6,7 @@
   </div>
 
 @if (day_selected !== null) {
-    <app-summary (closePopup)="hideSummary()" (addEvent)="addEvent($event)" (deleteEvent)="deleteEvent($event)" [day]="day_selected" [events]="events.get(day_selected.toString()) ?? []"></app-summary>
+    <app-summary (closePopup)="hideSummary()" (addEvent)="addEvent($event)" (updateEvent)="updateEvent($event)" (deleteEvent)="deleteEvent($event)" [day]="day_selected" [events]="events.get(dateToKey(day_selected)) ?? []"></app-summary>
 }
 
 <div class="container-fluid">
@@ -52,7 +52,7 @@
             <div class="row  align-items-stretch">
                 @for (day of week; track day) {
                     <div class="col p-2">
-                        <app-calendar-cell [day]="day" [events]="events.get(day.toString()) ?? []" (click)="showSummary(day)"></app-calendar-cell>
+                        <app-calendar-cell [day]="day" [events]="events.get(dateToKey(day)) ?? []" (click)="showSummary(day)"></app-calendar-cell>
                     </div>
                 }
             </div>

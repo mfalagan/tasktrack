@@ -23,3 +23,18 @@ export function DateData(year: number, month: number, day: number): DateData {
         day: day
     }
 }
+
+export function DateDataFromDate(date: Date): DateData {
+    return {
+        year: date.getFullYear(),
+        month: date.getMonth(),
+        day: date.getDate()
+    }
+}
+
+export function toDateString(date: DateData): string {
+    if (!date.year || !date.month || !date.day) {
+        throw new Error("DateData object is missing year, month, or day.");
+    }
+    return `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
+}

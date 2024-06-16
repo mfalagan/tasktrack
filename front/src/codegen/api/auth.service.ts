@@ -26,7 +26,7 @@ import { Configuration }                                     from '../configurat
 @Injectable()
 export class AuthService {
 
-    protected basePath = '/';
+    protected basePath = 'http://api.localhost';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
@@ -70,11 +70,6 @@ export class AuthService {
 
         let headers = this.defaultHeaders;
 
-        // authentication (Bearer) required
-        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
-            headers = headers.set('Authorization', this.configuration.apiKeys["Authorization"]);
-        }
-
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
         ];
@@ -100,6 +95,7 @@ export class AuthService {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,
+                responseType: 'text' as 'json',
                 reportProgress: reportProgress
             }
         );
@@ -119,8 +115,9 @@ export class AuthService {
         let headers = this.defaultHeaders;
 
         // authentication (Bearer) required
-        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
-            headers = headers.set('Authorization', this.configuration.apiKeys["Authorization"]);
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
         }
 
         // to determine the Accept header
@@ -160,11 +157,6 @@ export class AuthService {
 
         let headers = this.defaultHeaders;
 
-        // authentication (Bearer) required
-        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
-            headers = headers.set('Authorization', this.configuration.apiKeys["Authorization"]);
-        }
-
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
         ];
@@ -194,5 +186,4 @@ export class AuthService {
             }
         );
     }
-
 }

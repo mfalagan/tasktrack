@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EventData } from '../../../codegen';
+import { EventData, PriorityLevel } from '../../../codegen';
 
 @Component({
   selector: 'app-edit-event',
@@ -20,7 +20,7 @@ export class EditEventComponent {
     this.eventForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required]],
-      priority: ['', [Validators.required, Validators.min(1), Validators.max(5)]]
+      priority: ['', [Validators.required, Validators.min(0), Validators.max(3)]]
     });
   }
 
@@ -35,11 +35,13 @@ export class EditEventComponent {
 
   submit() {
     if (this.eventForm.valid) {
+      let formValue = this.eventForm.value;
+      formValue.priority = +formValue.priority as PriorityLevel;
+
       const updatedEvent: EventData = {
         ...this.event,
-        ...this.eventForm.value
+        ...formValue
       };
-      console.log("edit-event emmitting ", updatedEvent);
       this.updateEvent.emit(updatedEvent);
     }
   }

@@ -1,12 +1,12 @@
 import {
 	Component,
 	Input,
-	SimpleChanges,
+	SimpleChanges, OnChanges,
 } from '@angular/core';
 import { CalendarCellComponent } from "./calendar-cell/calendarcell.component";
 import { FormsModule } from '@angular/forms';
 import { SummaryComponent } from "./summary/summary.component";
-import { EventData, EventEntry, EventService, PriorityLevel } from '../../codegen';
+import { DateDataFromDate, EventData, EventEntry, EventService, toDateString } from '../../codegen';
 import { Router } from '@angular/router';
 
 @Component({
@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 	styleUrl: './calendar.component.css',
 	imports: [CalendarCellComponent, FormsModule, SummaryComponent]
 })
-export class CalendarComponent {
+export class CalendarComponent implements OnChanges {
 	@Input() year: number = new Date(Date.now()).getFullYear();
 	@Input() month: number = new Date(Date.now()).getMonth() + 1;
 	@Input() events: Map<string, EventEntry[]> = new Map<string, EventEntry[]>();
@@ -27,6 +27,14 @@ export class CalendarComponent {
 
 	constructor(private eventService: EventService, private router: Router) {
 		this.updateCalendar();
+		this.eventService.eventsGet().subscribe({
+			next: (events) => {
+				events.forEach(event => this.addLocalEvent(event));
+			},
+			error: (error) => {
+				console.error('Error getting events:', error);
+			}
+		});
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
@@ -37,11 +45,11 @@ export class CalendarComponent {
 		this.days = [];
 		const firstDayOfMonth = new Date(this.year, this.month - 1, 1);
 		const lastDayOfMonth = new Date(this.year, this.month, 0);
-		let dayToDraw = this.getStartDay(firstDayOfMonth);
+		const dayToDraw = this.getStartDay(firstDayOfMonth);
 
 		let keepDrawing = true;
 		while (keepDrawing) {
-			let week: Date[] = [];
+			const week: Date[] = [];
 			for (let i = 0; i < 7; ++i) {
 				if (dayToDraw >= lastDayOfMonth && dayToDraw.getDay() === 0)
 					keepDrawing = false;
@@ -86,12 +94,14 @@ export class CalendarComponent {
 		});
 	}
 	addLocalEvent(event: EventEntry): void {
-		this.events.set(event.dueDate!.toString(), this.events.get(event.dueDate!.toString())?.concat(event) || [event]);
+		this.events.set(toDateString(event.dueDate!), this.events.get(toDateString(event.dueDate!))?.concat(event) || [event]);
 	}
 
 	updateEvent(event: EventEntry): void {
 		let id: number = event.id!;
-		let eventData = event as EventData; // TODO: check if eventData retains id
+		let eventData = event as EventData;
+
+		console.log('Updating event:', eventData);
 
 		this.eventService.eventsIdPut(id, eventData).subscribe({
 			next: (updatedEvent) => {
@@ -105,8 +115,8 @@ export class CalendarComponent {
 	}
 	updateLocalEvent(event: EventEntry): void {
 		this.events.set(
-			event.dueDate!.toString(), 
-			this.events.get(event.dueDate!.toString())?.map(e => e.id === event.id ? event : e) || []
+			toDateString(event.dueDate!), 
+			this.events.get(toDateString(event.dueDate!))?.map(e => e.id === event.id ? event : e) || []
 		);
 	}
 
@@ -124,7 +134,7 @@ export class CalendarComponent {
 		});
 	}
 	deleteLocalEvent(event: EventEntry): void {
-		this.events.set(event.dueDate!.toString(), this.events.get(event.dueDate!.toString())?.filter(e => e.id !== event.id) || []);
+		this.events.set(toDateString(event.dueDate!), this.events.get(toDateString(event.dueDate!))?.filter(e => e.id !== event.id) || []);
 	}
 
 	getStartDay(firstDayOfMonth: Date): Date {
@@ -155,5 +165,10 @@ export class CalendarComponent {
 	onLogout() {
 		localStorage.removeItem('jwtToken'); // Clear the JWT token
 		this.router.navigate(['/']); // Redirect to home or login page
+	}
+
+	dateToKey(date: Date): string {
+		let key = toDateString(DateDataFromDate(date));
+		return toDateString(DateDataFromDate(date));
 	}
 }

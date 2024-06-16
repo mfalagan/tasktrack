@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace back.Models.Transfer
 {
     public class DateData
@@ -11,6 +13,14 @@ namespace back.Models.Transfer
             Year = date.Year;
             Month = date.Month;
             Day = date.Day;
+        }
+
+        [JsonConstructor]
+        public DateData(int year, int month, int day)
+        {
+            Year = year;
+            Month = month;
+            Day = day;
         }
 
         public static implicit operator System.DateOnly(DateData date)

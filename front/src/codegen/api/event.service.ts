@@ -27,7 +27,7 @@ import { Configuration }                                     from '../configurat
 @Injectable()
 export class EventService {
 
-    protected basePath = '/';
+    protected basePath = 'http://api.localhost';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
@@ -70,8 +70,9 @@ export class EventService {
         let headers = this.defaultHeaders;
 
         // authentication (Bearer) required
-        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
-            headers = headers.set('Authorization', this.configuration.apiKeys["Authorization"]);
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
         }
 
         // to determine the Accept header
@@ -118,8 +119,9 @@ export class EventService {
         let headers = this.defaultHeaders;
 
         // authentication (Bearer) required
-        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
-            headers = headers.set('Authorization', this.configuration.apiKeys["Authorization"]);
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
         }
 
         // to determine the Accept header
@@ -166,8 +168,9 @@ export class EventService {
         let headers = this.defaultHeaders;
 
         // authentication (Bearer) required
-        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
-            headers = headers.set('Authorization', this.configuration.apiKeys["Authorization"]);
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
         }
 
         // to determine the Accept header
@@ -216,8 +219,9 @@ export class EventService {
         let headers = this.defaultHeaders;
 
         // authentication (Bearer) required
-        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
-            headers = headers.set('Authorization', this.configuration.apiKeys["Authorization"]);
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
         }
 
         // to determine the Accept header
@@ -272,8 +276,9 @@ export class EventService {
         let headers = this.defaultHeaders;
 
         // authentication (Bearer) required
-        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
-            headers = headers.set('Authorization', this.configuration.apiKeys["Authorization"]);
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
         }
 
         // to determine the Accept header
@@ -317,8 +322,9 @@ export class EventService {
         let headers = this.defaultHeaders;
 
         // authentication (Bearer) required
-        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
-            headers = headers.set('Authorization', this.configuration.apiKeys["Authorization"]);
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
         }
 
         // to determine the Accept header
@@ -353,5 +359,4 @@ export class EventService {
             }
         );
     }
-
 }

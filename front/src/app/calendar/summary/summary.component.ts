@@ -34,10 +34,8 @@ export class SummaryComponent {
   }
   persistEdit(event: EventData): void {
     if ('id' in event && typeof event.id === 'number') {
-      console.log("summary emitting update ", event);
       this.updateEvent.emit(event as EventEntry);
     } else {
-      console.log("summary emitting add ", event);
       this.addEvent.emit(event);
     }
     this.eventToEdit = null;

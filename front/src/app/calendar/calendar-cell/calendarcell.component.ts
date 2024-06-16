@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { EventEntry } from '../../../codegen';
 
 @Component({
@@ -8,7 +8,7 @@ import { EventEntry } from '../../../codegen';
 	templateUrl: './calendarcell.component.html',
 	styleUrl: './calendarcell.component.css'
 })
-export class CalendarCellComponent {
+export class CalendarCellComponent implements OnChanges {
 	@Input() day: Date = new Date(Date.now());
 	@Input() events: EventEntry[] = [];
 	dayNumber: number = 1;
